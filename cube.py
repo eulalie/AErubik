@@ -36,12 +36,13 @@ def print_o(s):
 
 dico_fct={'r':print_r, 'b':print_b, 'g':print_g, 'y':print_y, 'o':print_o, 'w':print_w}
 
-
+#rotation matrix
 Rx_pos = numpy.array([[1,0,0],[0,0,-1],[0,1,0]]) 
 
 #----------------------------------------------------------
 
 
+# elementary cube
 class s_cube:
     
   def __init__(self,pos,col):
@@ -53,15 +54,17 @@ class s_cube:
   def __repr__(self):
     return str(self.x)+','+str(self.y)+','+str(self.z)+'   '+str(self.colors)
 
+#Rubik's cube
 class cube:
 
   def __init__(self):
     self.s_cubes = []
-    index = [-2,-1,1,2]
+    index = [-2,-1,1,2] #4 crowns
     for x in index:
       for y in index:
         for z in index:
-          colors = ['n']*6
+          colors = ['n']*6 # no color (interior cube)
+          # if the cube is one a face, it gets a color
           if x == -2:
             colors[0] = 'r'  #color x1
 	  if x == 2:
@@ -75,7 +78,9 @@ class cube:
           if z == 2:
             colors[5] = 'w'
           self.s_cubes.append(s_cube([x,y,z],colors))
-
+          
+#return 3 listes (une pour chaque direction). Chaque liste est composée de 4 listes qui sont les cubes appartenant à une couronne.
+#Les couronnes 0 et 3 sont les faces visibles de la direction.
   def give_crowns(self):
     crownsX = [[],[],[],[]]
     crownsY = [[],[],[],[]]
@@ -108,6 +113,7 @@ class cube:
       if c.z == 2:
         crownsZ[3].append(c)
       
+      # on trie les listes des faces (dans le sens des deux autres axes) pour l'affichage.
       crownsX[0] = sorted(crownsX[0],key = lambda s_cube:(s_cube.y,s_cube.z))
       crownsX[3] = sorted(crownsX[3],key = lambda s_cube:(s_cube.y,s_cube.z))
       crownsY[0] = sorted(crownsY[0],key = lambda s_cube:(s_cube.x,s_cube.z))
@@ -117,13 +123,14 @@ class cube:
 
     return (crownsX,crownsY,crownsZ)
 
+  # return the color of each face
   def faces_color(self):
-    cr_axes = self.give_crowns()
+    cr_axes = self.give_crowns() 
     f_color = []
-    for a,axe in enumerate(cr_axes):
-      for i,cr in enumerate(axe):
-        if i%3==0:
-          f_color.append([])
+    for a,axe in enumerate(cr_axes): #3 listes, X, Y et Z
+      for i,cr in enumerate(axe): # 4 couronnes par listes
+        if i%3==0: #sur une face
+          f_color.append([]) 
           for c in cr:
             f_color[-1].append(c.colors[a*2+i*1/3])
 
