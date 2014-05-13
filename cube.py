@@ -6,8 +6,9 @@
 
 import random
 import numpy
+import time
 
-#random.seed(0)
+random.seed(0)
 
 #----------------------------------------------------------
 # Color
@@ -73,15 +74,15 @@ class cube:
           # if the cube is one a face, it gets a color
           if x == -2:
             colors[0] = 'r'  #color x1
-	  if x == 2:
+	  elif x == 2:
             colors[1] = 'o'
           if y == -2:
             colors[2] = 'b'
-          if y == 2:
+          elif y == 2:
             colors[3] = 'g'
           if z == -2:
             colors[4] = 'y'
-          if z == 2:
+          elif z == 2:
             colors[5] = 'w'
           self.s_cubes.append(s_cube([x,y,z],colors))
           
@@ -91,41 +92,21 @@ class cube:
     crownsX = [[],[],[],[]]
     crownsY = [[],[],[],[]]
     crownsZ = [[],[],[],[]]
+
+    dico_crown={-2:0, -1:1, 1:2, 2:3}
     for c in self.s_cubes:
-      if c.x == -2:
-        crownsX[0].append(c)
-      if c.x == -1:
-        crownsX[1].append(c)
-      if c.x == 1:
-        crownsX[2].append(c)
-      if c.x == 2:
-        crownsX[3].append(c)
+      crownsX[dico_crown[c.x]].append(c)	
+      crownsY[dico_crown[c.y]].append(c)
+      crownsZ[dico_crown[c.z]].append(c)
 
-      if c.y == -2:
-        crownsY[0].append(c)
-      if c.y == -1:
-        crownsY[1].append(c)
-      if c.y == 1:
-         crownsY[2].append(c)
-      if c.y == 2:
-         crownsY[3].append(c)
-
-      if c.z == -2:
-        crownsZ[0].append(c)
-      if c.z == -1:
-        crownsZ[1].append(c)
-      if c.z == 1:
-        crownsZ[2].append(c)
-      if c.z == 2:
-        crownsZ[3].append(c)
-      
-      # on trie les listes des faces (dans le sens des deux autres axes) pour l'affichage.
-      crownsX[0] = sorted(crownsX[0],key = lambda s_cube:(s_cube.y,s_cube.z))
-      crownsX[3] = sorted(crownsX[3],key = lambda s_cube:(s_cube.y,s_cube.z))
-      crownsY[0] = sorted(crownsY[0],key = lambda s_cube:(s_cube.x,s_cube.z))
-      crownsY[3] = sorted(crownsY[3],key = lambda s_cube:(s_cube.x,s_cube.z))
-      crownsZ[0] = sorted(crownsZ[0],key = lambda s_cube:(s_cube.x,s_cube.y))
-      crownsZ[3] = sorted(crownsZ[3],key = lambda s_cube:(s_cube.x,s_cube.y))
+   
+    # on trie les listes des faces (dans le sens des deux autres axes) pour l'affichage.
+    crownsX[0] = sorted(crownsX[0],key = lambda s_cube:(s_cube.y,s_cube.z))
+    crownsX[3] = sorted(crownsX[3],key = lambda s_cube:(s_cube.y,s_cube.z))
+    crownsY[0] = sorted(crownsY[0],key = lambda s_cube:(s_cube.x,s_cube.z))
+    crownsY[3] = sorted(crownsY[3],key = lambda s_cube:(s_cube.x,s_cube.z))
+    crownsZ[0] = sorted(crownsZ[0],key = lambda s_cube:(s_cube.x,s_cube.y))
+    crownsZ[3] = sorted(crownsZ[3],key = lambda s_cube:(s_cube.x,s_cube.y))
 
     return (crownsX,crownsY,crownsZ)
 
@@ -192,17 +173,20 @@ class cube:
       col = c.colors
       if r==0:
         c.colors = [col[0],col[1],col[5],col[4],col[2],col[3]]
-      if r==1:
+      elif r==1:
         c.colors = [col[0],col[1],col[4],col[5],col[3],col[2]]
-      if r==2:
+      elif r==2:
         c.colors = [col[4],col[5],col[2],col[3],col[1],col[0]]
-      if r==3:
+      elif r==3:
         c.colors = [col[5],col[4],col[2],col[3],col[0],col[1]]
-      if r==4:
+      elif r==4:
         c.colors = [col[3],col[2],col[0],col[1],col[4],col[5]]
-      if r==5:
+      elif r==5:
         c.colors = [col[2],col[3],col[1],col[0],col[4],col[5]]
 
+
+
+t=time.time()
 
 cube1 = cube()
 #print cube1
@@ -222,4 +206,12 @@ for rot,cr in zip(r,c):
   cube1.move(rot,cr)
 
 cube1.print_face()
+
+print time.time()-t
+
+# 0.0662791728973
+
+# 0.0655479431152
+
+
 
