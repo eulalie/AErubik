@@ -7,7 +7,7 @@
 import random
 import numpy
 
-random.seed(0)
+#random.seed(0)
 
 #----------------------------------------------------------
 # Color
@@ -37,8 +37,14 @@ def print_o(s):
 dico_fct={'r':print_r, 'b':print_b, 'g':print_g, 'y':print_y, 'o':print_o, 'w':print_w}
 
 #rotation matrix
-Rx_pos = numpy.array([[1,0,0],[0,0,-1],[0,1,0]]) 
+Rx_neg = numpy.array([[1,0,0],[0,0,-1],[0,1,0]]) 
+Rx_pos = numpy.array([[1,0,0],[0,0,1],[0,-1,0]]) 
+Ry_neg = numpy.array([[0,0,1],[0,1,0],[-1,0,0]]) 
+Ry_pos = numpy.array([[0,0,-1],[0,1,0],[1,0,0]]) 
+Rz_neg = numpy.array([[0,-1,0],[1,0,0],[0,0,1]]) 
+Rz_pos = numpy.array([[0,1,0],[-1,0,0],[0,0,1]]) 
 
+dico_rot = {0:Rx_pos, 1:Rx_neg, 2:Ry_pos, 3:Ry_neg, 4:Rz_pos, 5:Rz_neg}
 #----------------------------------------------------------
 
 
@@ -145,18 +151,57 @@ class cube:
 
   def print_face(self):
     motif='■'
-    str_=''
-  
+    str_ = ['','','','']
+    sep = ''
+
     f_color = self.faces_color()
-    for f in f_color:
-      sep=''
-      for col in f:
-        str_+=dico_fct[str(col)](motif)+' '
-        sep+='--'
-      str_+= '\n'+sep+'\n'
+    for i,f in enumerate(f_color):
+      for j,col in enumerate(f):
+        if col=='n':
+          print 'Error: interior cube on a face'
+          exit(0)
+        # 4premiers cubes sur première ligne, 4 suivants sur 2ième...
+        str_[j/4]+=dico_fct[str(col)](motif)+' '
 
-    print str_
+        if j/4==0:
+          sep += '--'
 
+      # espace entre les faces
+      for i in range(4):
+        str_[i] += '  '
+        
+
+    for s in str_:
+      print s
+
+    print sep
+
+
+#r : rotation voulu (dico rotation), cr: couronne dans l'axe de la rotation
+  def move(self,r,cr):
+    crown = self.give_crowns()[r/2][cr]
+    for c  in crown:
+      pos0 = numpy.array([c.x,c.y,c.z])
+      pos1 = numpy.dot(pos0,dico_rot[r])
+      c.x = pos1[0]
+      c.y = pos1[1]
+      c.z = pos1[2]
+      
+      # rotation de c:
+      # trouver un meilleur moyen, c'est pourri
+      col = c.colors
+      if r==0:
+        c.colors = [col[0],col[1],col[5],col[4],col[2],col[3]]
+      if r==1:
+        c.colors = [col[0],col[1],col[4],col[5],col[3],col[2]]
+      if r==2:
+        c.colors = [col[4],col[5],col[2],col[3],col[1],col[0]]
+      if r==3:
+        c.colors = [col[5],col[4],col[2],col[3],col[0],col[1]]
+      if r==4:
+        c.colors = [col[3],col[2],col[0],col[1],col[4],col[5]]
+      if r==5:
+        c.colors = [col[2],col[3],col[1],col[0],col[4],col[5]]
 
 
 cube1 = cube()
@@ -168,4 +213,13 @@ cube1 = cube()
 #print cube1.faces_color()
 
 cube1.print_face()
-  
+
+# succesion de 10 mouvements:
+r = [random.randint(0,5) for i in xrange(10)]
+c = [random.randint(0,3) for i in xrange(10)]
+
+for rot,cr in zip(r,c):
+  cube1.move(rot,cr)
+
+cube1.print_face()
+
