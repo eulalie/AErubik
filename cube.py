@@ -52,6 +52,8 @@ dico_rot = {0:Rx_pos, 1:Rx_neg, 2:Ry_pos, 3:Ry_neg, 4:Rz_pos, 5:Rz_neg}
 # elementary cube
 class s_cube:
     
+# El cubo es definido por una posicion en R3 y 6 colores ordenadas 
+# el orden es fijado arbitrariamente x0,x1,y0,y1,z0,z1 (izquierda,derecha,adelante,atras,abajo,ariba)
   def __init__(self,pos,col):
     self.x = pos[0]
     self.y = pos[1]
@@ -87,7 +89,7 @@ class cube:
           self.s_cubes.append(s_cube([x,y,z],colors))
           
 #return 3 listes (une pour chaque direction). Chaque liste est composée de 4 listes qui sont les cubes appartenant à une couronne.
-#Les couronnes 0 et 3 sont les faces visibles de la direction.
+#Les couronnes 0 et 3 sont les faces visibles de chaque direction.
   def give_crowns(self):
     crownsX = [[],[],[],[]]
     crownsY = [[],[],[],[]]
@@ -163,13 +165,13 @@ class cube:
     crown = self.give_crowns()[r/2][cr]
     for c  in crown:
       pos0 = numpy.array([c.x,c.y,c.z])
-      pos1 = numpy.dot(pos0,dico_rot[r])
+      pos1 = numpy.dot(pos0,dico_rot[r]) #producto matricial
       c.x = pos1[0]
       c.y = pos1[1]
       c.z = pos1[2]
       
       # rotation de c:
-      # trouver un meilleur moyen, c'est pourri
+      # trouver un meilleur moyen, c'est nul
       col = c.colors
       if r==0:
         c.colors = [col[0],col[1],col[5],col[4],col[2],col[3]]
