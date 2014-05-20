@@ -1,0 +1,72 @@
+Resolver el rubik 3x3 con un algoritmo genético.
+--> Dado una organización del rubik al azar, encontrar la mejor (mas corta) secuencia de movimientos para resolver lo.
+
+Dos etapas, que pueden hacerse juntas:
+- encontrar una secuencia que resuelva el cubo
+- tener la secuencia mas pequeña posible
+
+1/ Representación del cubo
+
+unidad elementaria: un cubito, con una posición (tabla) y una tabla de colores (tab ? string ?)
+El rubik es una lista de 27 cubitos
+Esta en un espacio orientado (x,y,z). El cubo no se mueve en el espacio
+x,y,z = -1,0 o 1. El cubito (0,0,0) es el del interior, nunca se ve.
+
+otra posibilidad: unidad elementaria, una cara de cubito? (con una color y una dirección)?
+Entonces, el cubito tendría una, dos o tres caras.
+
+2/ Movimientos
+un movimiento tiene dos características:
+a/ tipo de movimiento (rotación sobre el axo x,y o z + sentido positivo o negativo)
+b/ corona del cubo que se mueve (1,2 o 3)
+--- > no existe movimiento de la segunda corona
+--- > podemos tener un cuarto o medio torno.
+
+Una secuencia de movimientos son dos lista, una para cada características
+
+// mejor si tenemos solo una lista?
+
+Después solo hay que aplicar una matriz e rotación sobre las posiciones de cada cubito de la corona y cambiar el orden del vector colores.
+
+
+--- Algoritmo genético
+3/Fitness de la secuencia de movimientos
+F = a*fit_cubo + b*fit_sequ
+a+b = 1 (dan mas importacia al cubo o a la secuencia, pueden cambiar)
+
+fit_cubo: hay que aplicar la secuencia sobre el cubo:
+contar el numero de cubitos en su bueno sitio (adequacion posición,colores)
+
+fit_sequ: tamaño de la secuencia
+
+
+4/Selección
+
+5/Mutación
+modificar el tipo de movimiento o la corona que se mueve
+
+6/Cruzamiento
+
+7/Mejoramientos
+ - Tenemos que aplicar la secuencia de movimientos sobre el cubo. Es muy pesado...
+
+- La secuencia puede subir un tratamiento.
+ej: 2 rotaciones de 2 coronas en la misma dirección, el mismo sentido = 1 rotación de la tercera corona en la misma dirección y el otro sentido.
+
+- hacer un subconjunto de pequeñas secuencias de movimientos (3 a 7 o mas) que no modifican una o dos coronas.
+
+- Una duda. Me parece que la cualidad de una secuencia depende mucho del estado del rubik al principio. No se como un cruzamiento puede ser útil... El problema es que un movimiento depende mucho de los otros, hay una grande epistasis. Hay que pensar en esto cuando hacemos el algoritmo.
+--- > para mutaciones: seleccionar mutaciones que no tienen un grande impacto. (?.. y el cruzamiento?)
+--- > el cruzamiento permite crear un individuo totalmente diferente.
+
+---- 
+El fenómeno de la epistasis consiste en la existencia de fuertes
+vinculaciones/interacciones entre los genes, de forma que el efecto
+de unos genes inhibe o potencia otros. En algunos casos, el resultado
+es tan complejo que no tiene sentido considerar los efectos de los
+genes de forma individual sino conjuntamente.
+----
+el curso habla de "building block" cuando hay una epistasis alta.
+
+
+- Existen buenos metodos heuristico. hay que mezclar AE y inteligencia humana
