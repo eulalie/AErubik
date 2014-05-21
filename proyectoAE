@@ -21,10 +21,11 @@ a/ tipo de movimiento (rotación sobre el axo x,y o z + sentido positivo o negat
 b/ corona del cubo que se mueve (1,2 o 3)
 --- > no existe movimiento de la segunda corona
 --- > podemos tener un cuarto o medio torno.
+o! 4x4 : otro movimientos (2 coronas juntas)
 
 Una secuencia de movimientos son dos lista, una para cada características
 
-// mejor si tenemos solo una lista?
+// mejor si tenemos solo una lista? : R L F B U D ...
 
 Después solo hay que aplicar una matriz e rotación sobre las posiciones de cada cubito de la corona y cambiar el orden del vector colores.
 
@@ -51,9 +52,8 @@ modificar el tipo de movimiento o la corona que se mueve
  - Tenemos que aplicar la secuencia de movimientos sobre el cubo. Es muy pesado...
 
 - La secuencia puede subir un tratamiento.
-ej: 2 rotaciones de 2 coronas en la misma dirección, el mismo sentido = 1 rotación de la tercera corona en la misma dirección y el otro sentido.
-
-- hacer un subconjunto de pequeñas secuencias de movimientos (3 a 7 o mas) que no modifican una o dos coronas.
+//ej: 2 rotaciones de 2 coronas en la misma dirección, el mismo sentido = 1 rotación de la tercera corona en la misma dirección y el otro sentido.
+Cuando lo hacemos? siempre?
 
 - Una duda. Me parece que la cualidad de una secuencia depende mucho del estado del rubik al principio. No se como un cruzamiento puede ser útil... El problema es que un movimiento depende mucho de los otros, hay una grande epistasis. Hay que pensar en esto cuando hacemos el algoritmo.
 --- > para mutaciones: seleccionar mutaciones que no tienen un grande impacto. (?.. y el cruzamiento?)
@@ -62,11 +62,53 @@ ej: 2 rotaciones de 2 coronas en la misma dirección, el mismo sentido = 1 rotac
 ---- 
 El fenómeno de la epistasis consiste en la existencia de fuertes
 vinculaciones/interacciones entre los genes, de forma que el efecto
-de unos genes inhibe o potencia otros. En algunos casos, el resultado
++de unos genes inhibe o potencia otros. En algunos casos, el resultado
 es tan complejo que no tiene sentido considerar los efectos de los
 genes de forma individual sino conjuntamente.
 ----
 el curso habla de "building block" cuando hay una epistasis alta.
-
+(hacer un conjunto de pequenas secuencias elegidas?)
 
 - Existen buenos metodos heuristico. hay que mezclar AE y inteligencia humana
+---- > hibridos fuertes (?)
+anadir heuristica en el AE. 
+idea 1: hacer un subconjunto de pequeñas secuencias de movimientos (3 a 7 o mas) que no modifican una o dos coronas (cuando estan hechas).
+
+- Existen diferentes caminos para llegar al mismo cubo. 
+--- > necesitamos un metodo para decir que dos cubos son iguales.
+Nuestros individuos son los caminos. 
+-- > Comparacion:
+si 3*3 : las caras no cambian, solo hay una buena posicion para cada cubito.
+si 4*4 : las caras cambian
+En el rubik, el orden de los cubitos no cambian. El primero siempre sera el rojo-amarillo-azul. Para la comparacion, solo hay que comparar las posiciones y la orientacion de cada cubito (son en el mismo orden)
+
+
+- Una mutacion o un cruzamiento cambian totalmente el individuo. (epistasis): no problema con la diversidad.
+Podemos pensar en mutaciones (cruzamiento?) que no cambian mucho el individuo.
+
+-------------------------------
+Construccion de un grafo con un AE:
+-------------------------------
+nuestros individuos son Rubik.
+Estos rubik son nodos del grafo. (un parametro es su distancia desde rubik 0)
+El rubik 0 es el rubik que queremos resolver hasta rubik*.
+Entre ellos hay una secuencia de 5(?) movimientos que permiten ir de un rubik al otro.
+La fitness: distancia desde el Rubik 0 + distancia hasta el Rubik final (diferencia)
+codificacion: el camino para llegar hasta el
+Despues de la seleccion:  
+- mutacion en el camino (ultimo? probabilidad?) que llega hasta el 
+- cruzamiento: intercambiamos los (ultimos? con una probabilidad mas alta para los ultimos?) caminos que llegan hasta dos mejores
+- tenemos que anadir un camino desde los mejores rubik. puede hacerse con un cruzimiento o con el azar.
+-- > creacion de un nuevo rubik que remplaca otro (segun su fitness) o el rubik creado ya existe, solo creamos un nuevo camino para este (esto puede cambiar su fitness (modificar su distancia al rubik 0).
+
+problema: comparacion entre dos rubik. (tiempo)
+cada nuevo rubik debe ser comparado con todos los otros rubik. (? y capaz que no, si crear nuevos links con rubik es importante.) Podemos comparar los solo con los que tienen la misma distancia hasta el rubik*.
+Pero esto no va a pasar mucho.
+o! con la diversidad
+
+cuando tenemos un camino hasta rubik*. Podemos guardar los ultimos nodos (marquar los).
+
+aca no hay heuristica.... anadir inteligencia humana?
+- dar importancia a rubik con una corona, o dos hechas. utilizar (con probabilidad) subconjunto de movimientos que nos las cambian
+- metodos hay hechos? G1,G0,G2...
+- cuando buenas posiciones pero malas orientaciones?
